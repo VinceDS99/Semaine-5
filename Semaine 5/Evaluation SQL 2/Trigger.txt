@@ -1,0 +1,58 @@
+DROP TABLE IF EXISTS `commander_articles`;
+CREATE TABLE IF NOT EXISTS `commander_articles` (
+  `codart` int(10) UNSIGNED NOT NULL AUTO_INCREMENT,
+  `qte` int(50) NOT NULL,
+  `date` datetime(6) NOT NULL,
+ KEY (`codart`)
+) ENGINE=InnoDB AUTO_INCREMENT=31 DEFAULT CHARSET=utf8;
+
+
+ALTER TABLE `commander_articles`
+  ADD CONSTRAINT `codart_1` FOREIGN KEY (`codart`) REFERENCES `products` (`pro_id`);
+
+
+ALTER TABLE commander_articles ENGINE=InnoDB  
+
+delimiter//
+CREATE TRIGGER after_products_update  
+AFTER UPDATE  
+ON products 
+FOR EACH ROW
+BEGIN
+  IF NEW.pro_stock<pro_stock_alert THEN
+  INSERT commander_articles
+  SET qte=pro_stock_alert-NEW.pro_stock;
+  SET date=CURRENT_TIMESTAMP;
+  END IF;
+END//
+
+
+
+
+
+CREATE TRIGGER after_products_update  
+AFTER UPDATE  
+ON products 
+FOR EACH ROW
+BEGIN
+  SELECT pro_stock FROM PRODUCTS;
+  IF NEW.pro_stock<pro_stock_alert THEN
+  UPDATE commander_articles SET qte=pro_stock_alert-NEW.pro_stock WHERE codart=pro_id,
+  UPDATE commander_articles SET date=CURRENT_TIMESTAMP WHERE codart=pro_id;
+  END IF;
+END;
+
+
+
+
+CREATE TRIGGER after_products_update  
+AFTER UPDATE  
+ON products 
+FOR EACH ROW
+BEGIN
+  IF NEW.pro_stock<pro_stock_alert THEN
+  UPDATE commander_articles SET qte=pro_stock_alert-NEW.pro_stock WHERE codart=pro_id,
+  UPDATE commander_articles SET date=CURRENT_TIMESTAMP WHERE codart=pro_id;
+  END IF;
+END;
+
